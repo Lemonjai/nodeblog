@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var multer = require('multer');
-var upload = multer({ dest: 'uploads/' });
+var upload = multer({ dest: 'uploads/' })
 var expressValidator = require('express-validator');
 
 var mongo = require('mongodb');
@@ -14,6 +14,7 @@ var db = require('monk')('localhost/nodeblog');
 
 var routes = require('./routes/index');
 var posts = require('./routes/posts');
+var categories = require('./routes/categories');
 
 var app = express();
 
@@ -31,11 +32,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Expression Session
+// Express Session
 app.use(session({
-  secret: 'keyboard cat',
-  saveUninitialized: true,
-  resave: true
+    secret: 'secret',
+    saveUninitialized: true,
+    resave: true
 }));
 
 // Express Validator
@@ -56,6 +57,7 @@ app.use(expressValidator({
   }
 }));
 
+
 // Connect-Flash
 app.use(require('connect-flash')());
 app.use(function (req, res, next) {
@@ -63,14 +65,15 @@ app.use(function (req, res, next) {
   next();
 });
 
-// Make our db acessible to our router
+// Make our db accessible to our router
 app.use(function(req,res,next){
-  req.db = db;
-  next();
+    req.db = db;
+    next();
 });
 
 app.use('/', routes);
 app.use('/posts', posts);
+app.use('/categories', categories);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
